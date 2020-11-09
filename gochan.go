@@ -9,7 +9,7 @@ type Gochan struct {
 	c *Client
 }
 
-type board struct {
+type ControlBoard struct {
 	Name   string
 	gochan *Gochan
 }
@@ -29,18 +29,18 @@ func New() *Gochan {
 	}
 }
 
-func (g *Gochan) Board(name string) *board {
-	return &board{name, g}
+func (g *Gochan) Board(name string) *ControlBoard {
+	return &ControlBoard{name, g}
 }
 
-func (b *board) GetThread(number int) (err error, thread Thread) {
+func (b *ControlBoard) GetThread(number int) (err error, thread Thread) {
 	err = b.gochan.c.Get(
 		fmt.Sprintf("/%s/thread/%d.json", b.Name, number), &thread)
 	thread.Board = b.Name
 	return
 }
 
-func (b *board) GetPage(number int) (err error, model PaginatedThreads) {
+func (b *ControlBoard) GetPage(number int) (err error, model PaginatedThreads) {
 	err = b.gochan.c.Get(
 		fmt.Sprintf("/%s/%d.json", b.Name, number), &model)
 	model.Board = b.Name
@@ -67,7 +67,7 @@ pages:
 	return
 }
 
-func (b *board) GetCatalog() (err error, model CatalogModel) {
+func (b *ControlBoard) GetCatalog() (err error, model CatalogModel) {
 
 	err = b.gochan.c.Get(fmt.Sprintf("/%s/catalog.json", b.Name), &model.Pages)
 	model.Board = b.Name
